@@ -1,6 +1,20 @@
 #!/usr/bin/env node
 
 import module from "node:module";
+import { arch, execArgv, execPath, argv } from "node:process";
+
+// RISC-V Sv39: V8 reserves ~10GB VA per Wasm instance for trap-handler guard
+// regions.  With only 256GB user VA space this causes OOM after ~24 instances.
+// Re-exec with --disable-wasm-trap-handler so V8 uses explicit bounds checks.
+if (arch === "riscv64" && !execArgv.includes("--disable-wasm-trap-handler")) {
+  const { spawn } = await import("node:child_process");
+  const child = spawn(execPath, ["--disable-wasm-trap-handler", ...argv.slice(1)], {
+    stdio: "inherit",
+  });
+  child.on("exit", (code, signal) => process.exit(signal ? 1 : (code ?? 1)));
+  // Prevent the rest of the script from executing in the parent process.
+  await new Promise(() => {});
+}
 
 // https://nodejs.org/api/module.html#module-compile-cache
 if (module.enableCompileCache && !process.env.NODE_DISABLE_COMPILE_CACHE) {

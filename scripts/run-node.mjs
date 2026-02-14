@@ -107,8 +107,21 @@ const logRunner = (message) => {
   process.stderr.write(`[openclaw] ${message}\n`);
 };
 
+const riscvNodeFlags = () => {
+  // RISC-V Sv39 has only 256GB user virtual address space.  V8 reserves ~10GB
+  // per Wasm instance for trap-handler guard regions, which exhausts the VA
+  // space after ~24 instances and causes "Out of memory: Cannot allocate Wasm
+  // memory" errors in Node's built-in undici/llhttp.  Disabling the trap
+  // handler makes V8 use explicit bounds checks instead, removing the large VA
+  // reservations.
+  if (process.arch === "riscv64") {
+    return ["--disable-wasm-trap-handler"];
+  }
+  return [];
+};
+
 const runNode = () => {
-  const nodeProcess = spawn(process.execPath, ["openclaw.mjs", ...args], {
+  const nodeProcess = spawn(process.execPath, [...riscvNodeFlags(), "openclaw.mjs", ...args], {
     cwd,
     env,
     stdio: "inherit",

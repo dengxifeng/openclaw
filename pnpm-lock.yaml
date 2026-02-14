@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  '@matrix-org/matrix-sdk-crypto-nodejs': github:dengxifeng/matrix-rust-sdk-crypto-nodejs#v0.4.0-riscv
   fast-xml-parser: 5.3.4
   form-data: 2.5.4
   qs: 6.14.1
@@ -369,8 +370,8 @@ importers:
   extensions/matrix:
     dependencies:
       '@matrix-org/matrix-sdk-crypto-nodejs':
-        specifier: ^0.4.0
-        version: 0.4.0
+        specifier: github:dengxifeng/matrix-rust-sdk-crypto-nodejs#v0.4.0-riscv
+        version: https://codeload.github.com/dengxifeng/matrix-rust-sdk-crypto-nodejs/tar.gz/985cfae348a5d349c6fc961763529cb544a8c826
       '@vector-im/matrix-bot-sdk':
         specifier: 0.8.0-element.3
         version: 0.8.0-element.3
@@ -1478,8 +1479,9 @@ packages:
     resolution: {integrity: sha512-YHVZLRz9ULVlubRi51P1AQj7oOb+caiTv/HsNa7r587ale8kLNBx2Sa99fRWuFhNPu+SniwVi4pgqvkrWAcd/w==}
     engines: {node: '>=20.0.0'}
 
-  '@matrix-org/matrix-sdk-crypto-nodejs@0.4.0':
-    resolution: {integrity: sha512-+qqgpn39XFSbsD0dFjssGO9vHEP7sTyfs8yTpt8vuqWpUpF20QMwpCZi0jpYw7GxjErNTsMshopuo8677DfGEA==}
+  '@matrix-org/matrix-sdk-crypto-nodejs@https://codeload.github.com/dengxifeng/matrix-rust-sdk-crypto-nodejs/tar.gz/985cfae348a5d349c6fc961763529cb544a8c826':
+    resolution: {tarball: https://codeload.github.com/dengxifeng/matrix-rust-sdk-crypto-nodejs/tar.gz/985cfae348a5d349c6fc961763529cb544a8c826}
+    version: 0.4.0
     engines: {node: '>= 22'}
 
   '@microsoft/agents-activity@1.2.3':
@@ -6947,7 +6949,7 @@ snapshots:
       marked: 15.0.12
       mime-types: 3.0.2
 
-  '@matrix-org/matrix-sdk-crypto-nodejs@0.4.0':
+  '@matrix-org/matrix-sdk-crypto-nodejs@https://codeload.github.com/dengxifeng/matrix-rust-sdk-crypto-nodejs/tar.gz/985cfae348a5d349c6fc961763529cb544a8c826':
     dependencies:
       https-proxy-agent: 7.0.6
       node-downloader-helper: 2.1.10
@@ -8520,7 +8522,7 @@ snapshots:
 
   '@vector-im/matrix-bot-sdk@0.8.0-element.3':
     dependencies:
-      '@matrix-org/matrix-sdk-crypto-nodejs': 0.4.0
+      '@matrix-org/matrix-sdk-crypto-nodejs': https://codeload.github.com/dengxifeng/matrix-rust-sdk-crypto-nodejs/tar.gz/985cfae348a5d349c6fc961763529cb544a8c826
       '@types/express': 4.17.25
       '@types/request': 2.48.13
       another-json: 0.2.0

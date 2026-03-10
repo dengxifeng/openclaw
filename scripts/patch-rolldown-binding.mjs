@@ -59,9 +59,6 @@ for (const entry of readdirSync(pnpmStore)) {
   if (!existsSync(sharedDir)) {
     continue;
   }
-  if (existsSync(target)) {
-    continue;
-  }
   copyFileSync(CACHE_PATH, target);
   patched++;
   console.log(`[patch-rolldown-binding] Patched ${entry}`);

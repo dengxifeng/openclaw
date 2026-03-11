@@ -30,6 +30,7 @@
     "dist/",
     "docs/",
     "extensions/",
+    "scripts/patch-rolldown-binding.mjs",
     "skills/"
   ],
   "type": "module",

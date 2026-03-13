@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { isBunRuntime, isNodeRuntime } from "./runtime-binary.js";
 
@@ -8,6 +9,23 @@ type GatewayProgramArgs = {
 };
 
 type GatewayRuntimePreference = "auto" | "node" | "bun";
+
+/**
+ * Extra Node.js flags needed for the current platform.
+ *
+ * RISC-V Sv39 has only 256 GB of user virtual address space.  V8 reserves
+ * ~10 GB per WebAssembly instance for trap-handler guard regions, which
+ * exhausts the VA space after ~24 instances and causes "Out of memory:
+ * Cannot allocate Wasm memory" errors in Node's built-in undici/llhttp.
+ * `--disable-wasm-trap-handler` switches V8 to explicit bounds checks,
+ * eliminating the large VA reservations.
+ */
+function platformNodeFlags(): string[] {
+  if (os.arch() === "riscv64") {
+    return ["--disable-wasm-trap-handler"];
+  }
+  return [];
+}
 
 async function resolveCliEntrypointPathForService(): Promise<string> {
   const argv1 = process.argv[1];
@@ -173,7 +191,7 @@ async function resolveCliProgramArguments(params: {
       params.nodePath ?? (isNodeRuntime(execPath) ? execPath : await resolveNodePath());
     const cliEntrypointPath = await resolveCliEntrypointPathForService();
     return {
-      programArguments: [nodePath, cliEntrypointPath, ...params.args],
+      programArguments: [nodePath, ...platformNodeFlags(), cliEntrypointPath, ...params.args],
     };
   }
 
@@ -199,8 +217,9 @@ async function resolveCliProgramArguments(params: {
   if (!params.dev) {
     try {
       const cliEntrypointPath = await resolveCliEntrypointPathForService();
+      const nodeFlags = isNodeRuntime(execPath) ? platformNodeFlags() : [];
       return {
-        programArguments: [execPath, cliEntrypointPath, ...params.args],
+        programArguments: [execPath, ...nodeFlags, cliEntrypointPath, ...params.args],
       };
     } catch (error) {
       // If running under bun or another runtime that can execute TS directly

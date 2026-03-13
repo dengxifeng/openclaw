@@ -14,7 +14,7 @@ if (platform !== "linux" || arch !== "riscv64") {
 const BINDING_NAME = "rolldown-binding.linux-riscv64-gnu.node";
 const CACHE_PATH = join(import.meta.dirname, "..", "node_modules", ".cache", BINDING_NAME);
 const BINDING_PKG_URL =
-  "https://registry.npmjs.org/@dengxifeng/binding-linux-riscv64-gnu/-/binding-linux-riscv64-gnu-1.0.0-rc.7.tgz";
+  "https://registry.npmjs.org/@dengxifeng/binding-linux-riscv64-gnu/-/binding-linux-riscv64-gnu-1.0.0-rc.9.tgz";
 
 function download(url, dest) {
   return new Promise((resolve, reject) => {

@@ -3,7 +3,7 @@
   "version": "2026.3.12-riscv64.1",
   "description": "Multi-channel AI gateway with extensible messaging integrations",
   "keywords": [],
-  "homepage": "https://github.com/openclaw/openclaw#readme",
+  "homepage": "https://github.com/openclaw/openclaw#readme.riscv64",
   "bugs": {
     "url": "https://github.com/dengxifeng/openclaw/issues"
   },
@@ -415,6 +415,7 @@
     "signal-utils": "0.21.1",
     "tsdown": "0.21.2",
     "rolldown": "1.0.0-rc.9",
+    "lightningcss": "1.32.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vitest": "^4.1.0"

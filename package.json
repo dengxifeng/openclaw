@@ -1,17 +1,17 @@
 {
-  "name": "openclaw",
-  "version": "2026.3.8",
+  "name": "@dengxifeng/openclaw",
+  "version": "2026.3.8-riscv64.1",
   "description": "Multi-channel AI gateway with extensible messaging integrations",
   "keywords": [],
   "homepage": "https://github.com/openclaw/openclaw#readme",
   "bugs": {
-    "url": "https://github.com/openclaw/openclaw/issues"
+    "url": "https://github.com/dengxifeng/openclaw/issues"
   },
   "license": "MIT",
   "author": "",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/openclaw/openclaw.git"
+    "url": "git+https://github.com/dengxifeng/openclaw.git"
   },
   "bin": {
     "openclaw": "openclaw.mjs"

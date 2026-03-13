@@ -1,5 +1,48 @@
 # 🦞 OpenClaw — Personal AI Assistant
 
+## RISC-V 64-bit Fork
+
+This fork ports OpenClaw stable releases to the **RISC-V 64-bit (RVA23 Profile)** architecture, targeting SoCs like the SpacemiT K3.
+
+Not every upstream release will have a corresponding riscv64 branch. Ported branches follow the naming pattern `riscv-v<upstream-version>` (e.g., `riscv-v2026.3.8`).
+
+The long-term goal is to upstream riscv64 support into the main OpenClaw project. Feedback, bug reports, and contributions are welcome.
+
+> Run into a problem? Please open an [issue](https://github.com/dengxifeng/openclaw/issues).
+
+### Tested Environments
+
+| SoC | OS | Node.js |
+| --- | --- | --- |
+| SpacemiT K3 | Bianbu | [v22.22.0](https://archive.spacemit.com/nodejs/k3/v22.22.0/node-v22.22.0-linux-riscv64.tar.xz) |
+
+### Prerequisites
+
+System dependencies:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y \
+    git curl ca-certificates build-essential pkg-config \
+    cmake ninja-build python3 python3-pip \
+    libopenblas-dev
+```
+
+Install [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#install--update-script), then use it to install Node 22 with the SpacemiT mirror:
+
+```bash
+NVM_NODEJS_ORG_MIRROR=https://archive.spacemit.com/nodejs/k3 nvm install 22
+```
+
+### Installation
+
+```bash
+npm install -g @dengxifeng/openclaw
+openclaw onboard --install-daemon
+```
+
+---
+
 <p align="center">
     <picture>
         <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/openclaw/openclaw/main/docs/assets/openclaw-logo-text-dark.png">

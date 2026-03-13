@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Downloads the rolldown riscv64 native binding from GitHub and copies it
+// Downloads the rolldown riscv64 native binding from npm registry and copies it
 // into every installed rolldown version.
 import { copyFileSync, createWriteStream, existsSync, mkdirSync, readdirSync, rmSync } from "node:fs";
 import { get } from "node:https";
@@ -13,7 +13,8 @@ if (platform !== "linux" || arch !== "riscv64") {
 
 const BINDING_NAME = "rolldown-binding.linux-riscv64-gnu.node";
 const CACHE_PATH = join(import.meta.dirname, "..", "node_modules", ".cache", BINDING_NAME);
-const GITHUB_URL = "https://github.com/dengxifeng/rolldown/raw/v1.0.0-riscv/" + BINDING_NAME;
+const BINDING_PKG_URL =
+  "https://registry.npmjs.org/@dengxifeng/binding-linux-riscv64-gnu/-/binding-linux-riscv64-gnu-1.0.0-rc.7.tgz";
 
 function download(url, dest) {
   return new Promise((resolve, reject) => {
@@ -30,6 +31,7 @@ function download(url, dest) {
           return;
         }
         const file = createWriteStream(dest);
+        file.on("error", reject);
         res.pipe(file);
         file.on("finish", () => file.close(resolve));
       }).on("error", reject);
@@ -43,9 +45,20 @@ const pnpmStore = join(import.meta.dirname, "..", "node_modules", ".pnpm");
 // Patch rolldown (dev dependency, pnpm only)
 if (existsSync(pnpmStore)) {
   if (!existsSync(CACHE_PATH)) {
-    console.log(`[patch-rolldown-binding] Downloading from GitHub...`);
-    mkdirSync(join(CACHE_PATH, ".."), { recursive: true });
-    await download(GITHUB_URL, CACHE_PATH);
+    console.log(`[patch-rolldown-binding] Downloading from npm registry...`);
+    const tarPath = join(import.meta.dirname, "..", "node_modules", ".cache", "binding-riscv64.tgz");
+    mkdirSync(join(tarPath, ".."), { recursive: true });
+    await download(BINDING_PKG_URL, tarPath);
+
+    const extractDir = join(import.meta.dirname, "..", "node_modules", ".cache", "binding-riscv64-extract");
+    mkdirSync(extractDir, { recursive: true });
+    execSync(`tar -xzf "${tarPath}" -C "${extractDir}"`, { stdio: "ignore" });
+
+    const bindingInTar = join(extractDir, "package", BINDING_NAME);
+    copyFileSync(bindingInTar, CACHE_PATH);
+
+    rmSync(tarPath);
+    rmSync(extractDir, { recursive: true });
     console.log(`[patch-rolldown-binding] Downloaded to ${CACHE_PATH}`);
   }
   let patched = 0;

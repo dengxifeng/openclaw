@@ -9,7 +9,12 @@ import { VERSION } from "../version.js";
 import { writeJsonAtomic } from "./json-files.js";
 import { resolveOpenClawPackageRoot } from "./openclaw-root.js";
 import { normalizeUpdateChannel, DEFAULT_PACKAGE_CHANNEL } from "./update-channels.js";
-import { compareSemverStrings, resolveNpmChannelTag, checkUpdateStatus } from "./update-check.js";
+import {
+  compareSemverStrings,
+  isCompatibleArchUpdate,
+  resolveNpmChannelTag,
+  checkUpdateStatus,
+} from "./update-check.js";
 
 type UpdateCheckState = {
   lastCheckedAt?: string;
@@ -377,6 +382,12 @@ export async function runGatewayUpdateCheck(params: {
   const resolved = await resolveNpmChannelTag({ channel, timeoutMs: 2500 });
   const tag = resolved.tag;
   if (!resolved.version) {
+    await writeState(statePath, nextState);
+    return;
+  }
+
+  // Target version is not compatible with current arch-specific build; skip.
+  if (!isCompatibleArchUpdate(VERSION, resolved.version)) {
     await writeState(statePath, nextState);
     return;
   }

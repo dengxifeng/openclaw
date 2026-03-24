@@ -341,6 +341,21 @@ export async function resolveNpmChannelTag(params: {
   return { tag: channelTag, version: channelStatus.version };
 }
 
+export function isCompatibleArchUpdate(
+  currentVersion: string | null,
+  targetVersion: string | null,
+): boolean {
+  const current = parseComparableSemver(currentVersion);
+  if (!current?.prerelease?.includes("riscv64")) {
+    return true;
+  }
+  const target = parseComparableSemver(targetVersion);
+  if (!target?.prerelease?.includes("riscv64")) {
+    return false;
+  }
+  return true;
+}
+
 export function compareSemverStrings(a: string | null, b: string | null): number | null {
   const pa = parseComparableSemver(a);
   const pb = parseComparableSemver(b);

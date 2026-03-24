@@ -27,6 +27,7 @@ vi.mock("./update-check.js", async () => {
   return {
     checkUpdateStatus: vi.fn(),
     compareSemverStrings,
+    isCompatibleArchUpdate: vi.fn(() => true),
     resolveNpmChannelTag: vi.fn(),
   };
 });

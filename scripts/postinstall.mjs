@@ -77,7 +77,7 @@ if (existsSync(nodeModules)) {
   let patched = 0;
   for (const sharedDir of findAll("rolldown/dist/shared")) {
     const target = join(sharedDir, BINDING_NAME);
-    if (existsSync(target)) continue;
+    if (existsSync(target)) {continue;}
     copyFileSync(CACHE_PATH, target);
     patched++;
     console.log(`[patch-rolldown-binding] Patched ${sharedDir}`);
@@ -114,7 +114,7 @@ if (existsSync(nodeModules)) {
   let lcssPatched = 0;
   for (const lcssDir of findAll("node_modules/lightningcss")) {
     const target = join(lcssDir, LCSS_BINDING_NAME);
-    if (existsSync(target)) continue;
+    if (existsSync(target)) {continue;}
     copyFileSync(LCSS_CACHE_PATH, target);
     lcssPatched++;
     console.log(`[patch-lightningcss] Patched ${lcssDir}`);

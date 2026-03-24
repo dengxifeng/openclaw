@@ -93,6 +93,8 @@ elif [[ -f "$ROOT_DIR/node_modules/.pnpm/node_modules/rolldown/bin/cli.mjs" ]]; 
 elif [[ -f "$ROOT_DIR/node_modules/.pnpm/rolldown@1.0.0-rc.9/node_modules/rolldown/bin/cli.mjs" ]]; then
   node "$ROOT_DIR/node_modules/.pnpm/rolldown@1.0.0-rc.9/node_modules/rolldown/bin/cli.mjs" \
     -c "$A2UI_APP_DIR/rolldown.config.mjs"
+elif [[ -f "$ROOT_DIR/node_modules/rolldown/bin/cli.mjs" ]]; then
+  node "$ROOT_DIR/node_modules/rolldown/bin/cli.mjs" -c "$A2UI_APP_DIR/rolldown.config.mjs"
 else
   pnpm -s dlx rolldown -c "$A2UI_APP_DIR/rolldown.config.mjs"
 fi

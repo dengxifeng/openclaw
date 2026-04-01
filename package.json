@@ -1,6 +1,6 @@
 {
   "name": "openclaw",
-  "version": "2026.3.31",
+  "version": "2026.3.31-riscv64.1",
   "description": "Multi-channel AI gateway with extensible messaging integrations",
   "keywords": [],
   "homepage": "https://github.com/openclaw/openclaw#readme",
@@ -32,7 +32,8 @@
     "!docs/.generated/**",
     "!docs/.i18n/zh-CN.tm.jsonl",
     "skills/",
-    "scripts/postinstall-bundled-plugins.mjs"
+    "scripts/postinstall-bundled-plugins.mjs",
+    "scripts/postinstall.mjs"
   ],
   "type": "module",
   "main": "dist/index.js",
@@ -1075,7 +1076,7 @@
     "plugin-sdk:sync-exports": "node scripts/sync-plugin-sdk-exports.mjs",
     "plugin-sdk:usage": "node --import tsx scripts/analyze-plugin-sdk-usage.ts",
     "plugins:sync": "node --import tsx scripts/sync-plugin-versions.ts",
-    "postinstall": "node scripts/postinstall-bundled-plugins.mjs",
+    "postinstall": "node scripts/postinstall.mjs && node scripts/postinstall-bundled-plugins.mjs",
     "prepack": "pnpm build && pnpm ui:build",
     "prepare": "command -v git >/dev/null 2>&1 && git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git config core.hooksPath git-hooks || exit 0",
     "protocol:check": "pnpm protocol:gen && pnpm protocol:gen:swift && git diff --exit-code -- dist/protocol.schema.json apps/macos/Sources/OpenClawProtocol/GatewayModels.swift apps/shared/OpenClawKit/Sources/OpenClawProtocol/GatewayModels.swift",
@@ -1207,7 +1208,8 @@
     "uuid": "^13.0.0",
     "ws": "^8.20.0",
     "yaml": "^2.8.3",
-    "zod": "^4.3.6"
+    "zod": "^4.3.6",
+    "@lancedb/lancedb": "npm:@dengxifeng/lancedb@^0.27.1"
   },
   "devDependencies": {
     "@grammyjs/types": "^3.25.0",
@@ -1230,7 +1232,9 @@
     "tsdown": "0.21.7",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.2",
+    "rolldown": "1.0.0-rc.12",
+    "lightningcss": "1.32.0"
   },
   "peerDependencies": {
     "@napi-rs/canvas": "^0.1.89",
@@ -1266,7 +1270,10 @@
       "@sinclair/typebox": "0.34.49",
       "tar": "7.5.13",
       "tough-cookie": "4.1.3",
-      "yauzl": "3.2.1"
+      "yauzl": "3.2.1",
+      "@matrix-org/matrix-sdk-crypto-nodejs": "github:dengxifeng/matrix-rust-sdk-crypto-nodejs#v0.4.0-riscv",
+      "@lancedb/lancedb": "npm:@dengxifeng/lancedb@^0.27.1",
+      "openai": "^6.33.0"
     },
     "onlyBuiltDependencies": [
       "@lydell/node-pty",

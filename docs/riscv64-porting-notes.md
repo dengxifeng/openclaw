@@ -133,7 +133,37 @@ Interception points:
 
 ---
 
-## 5. Known Limitations
+## 5. Startup Performance Fixes (Slow CPU Mitigation)
+
+RISC-V hardware is significantly slower than x86-64/arm64 at single-core workloads. Two startup hot paths were identified as causing ~18s regressions and patched to avoid expensive plugin loading on the critical path.
+
+### 5.1 Banner tagline mode (`src/cli/banner-config-lite.ts`)
+
+**Problem:** `readCliBannerTaglineMode()` called `createConfigIO().loadConfig()`, which internally invokes `validateConfigObjectWithPlugins()`. This triggers full plugin loading (Jiti + AJV schema validation) just to read one leaf value (`cli.banner.taglineMode`).
+
+**Fix:** Replace with a lightweight raw read path:
+1. Resolve the config file path via `resolveConfigPath(env)`
+2. Read and parse the raw JSON5 with `parseConfigJson5()` — no plugin validation
+3. Extract `cli.banner.taglineMode` directly from the parsed object
+
+This avoids plugin loading entirely for banner rendering.
+
+### 5.2 Auth choice CLI help string (`src/commands/auth-choice-options.ts`)
+
+**Problem:** `formatAuthChoiceChoicesForCli()` called `resolveProviderSetupFlowContributions()`, which triggers the full runtime plugin load (Jiti + AJV) to enumerate provider auth choices — used only for generating a static `--help` string.
+
+**Fix:** Replace with `resolveManifestProviderAuthChoices()`, which reads JSON manifests only (no Jiti/AJV). Filter by `onboardingScopes` matching `"text-inference"` and map to `choiceId`. The interactive wizard (`buildAuthChoiceOptions`) retains the full runtime path for correctness.
+
+### 5.3 Files Changed
+
+| File                                  | Change                                                        |
+| ------------------------------------- | ------------------------------------------------------------- |
+| `src/cli/banner-config-lite.ts`       | Raw JSON5 read instead of full `createConfigIO().loadConfig()` |
+| `src/commands/auth-choice-options.ts` | Manifest-only auth choices instead of full plugin load        |
+
+---
+
+## 6. Known Limitations
 
 - **oxlint/tsgolint**: pre-commit hook lint tools lack riscv64 native packages; lint steps may fail but do not block commits
 - **Dependency fork maintenance**: riscv64 support for rolldown, lightningcss, matrix-sdk-crypto-nodejs, and lancedb depends on third-party forks; track upstream merge progress and remove overrides/patches when native support lands

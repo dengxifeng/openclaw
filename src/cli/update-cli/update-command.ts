@@ -23,6 +23,7 @@ import {
 import {
   compareSemverStrings,
   fetchNpmPackageTargetStatus,
+  isCompatibleArchUpdate,
   resolveNpmChannelTag,
   checkUpdateStatus,
 } from "../../infra/update-check.js";
@@ -822,6 +823,15 @@ export async function updateCommand(opts: UpdateCommandOptions): Promise<void> {
         fallbackToLatest = channel === "beta" && resolved.tag === "latest";
         return resolved.version;
       });
+    }
+    if (!isCompatibleArchUpdate(currentVersion ?? "", targetVersion)) {
+      if (!opts.json) {
+        defaultRuntime.log(
+          theme.muted("No compatible update available for this architecture-specific build."),
+        );
+      }
+      defaultRuntime.exit(0);
+      return;
     }
     const cmp =
       currentVersion && targetVersion ? compareSemverStrings(currentVersion, targetVersion) : null;

@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { isBunRuntime, isNodeRuntime } from "./runtime-binary.js";
 
@@ -8,6 +9,13 @@ type GatewayProgramArgs = {
 };
 
 type GatewayRuntimePreference = "auto" | "node" | "bun";
+
+function platformNodeFlags(): string[] {
+  if (os.arch() === "riscv64") {
+    return ["--disable-wasm-trap-handler"];
+  }
+  return [];
+}
 
 async function resolveCliEntrypointPathForService(): Promise<string> {
   const argv1 = process.argv[1];
@@ -173,7 +181,7 @@ async function resolveCliProgramArguments(params: {
       params.nodePath ?? (isNodeRuntime(execPath) ? execPath : await resolveNodePath());
     const cliEntrypointPath = await resolveCliEntrypointPathForService();
     return {
-      programArguments: [nodePath, cliEntrypointPath, ...params.args],
+      programArguments: [nodePath, ...platformNodeFlags(), cliEntrypointPath, ...params.args],
     };
   }
 
@@ -199,8 +207,9 @@ async function resolveCliProgramArguments(params: {
   if (!params.dev) {
     try {
       const cliEntrypointPath = await resolveCliEntrypointPathForService();
+      const nodeFlags = isNodeRuntime(execPath) ? platformNodeFlags() : [];
       return {
-        programArguments: [execPath, cliEntrypointPath, ...params.args],
+        programArguments: [execPath, ...nodeFlags, cliEntrypointPath, ...params.args],
       };
     } catch (error) {
       // If running under bun or another runtime that can execute TS directly
